@@ -25,6 +25,9 @@ func NewRootCmd() *cobra.Command {
 	// Register command groups.
 	rootCmd.AddCommand(
 		cmd.NewCourseCmd(DefaultExecuteFunc),
+		cmd.NewUserCmd(DefaultExecuteFunc),
+		cmd.NewEnrollmentCmd(DefaultExecuteFunc),
+		cmd.NewRoleCmd(DefaultExecuteFunc),
 	)
 
 	return rootCmd
