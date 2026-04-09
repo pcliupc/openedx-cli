@@ -28,6 +28,7 @@ func NewRootCmd() *cobra.Command {
 		cmd.NewUserCmd(DefaultExecuteFunc),
 		cmd.NewEnrollmentCmd(DefaultExecuteFunc),
 		cmd.NewRoleCmd(DefaultExecuteFunc),
+		cmd.NewSchemaCmd(nil),
 	)
 
 	return rootCmd
