@@ -63,3 +63,7 @@ YAML config with profiles and extension mappings. Profiles contain base URL, tok
 ## Entrypoint
 
 `cmd/openedx/main.go` — wires root command and calls `cli.NewRootCmd().Execute()`.
+
+## License
+
+MIT
