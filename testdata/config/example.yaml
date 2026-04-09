@@ -1,0 +1,29 @@
+version: 1
+
+profiles:
+  admin:
+    base_url: https://openedx.example.com
+    token_url: https://openedx.example.com/oauth2/access_token
+    client_id_env: OPENEDX_ADMIN_CLIENT_ID
+    client_secret_env: OPENEDX_ADMIN_CLIENT_SECRET
+    default_format: json
+
+  ops:
+    base_url: https://openedx.example.com
+    token_url: https://openedx.example.com/oauth2/access_token
+    client_id_env: OPENEDX_OPS_CLIENT_ID
+    client_secret_env: OPENEDX_OPS_CLIENT_SECRET
+    default_format: json
+
+extensions:
+  course.create:
+    method: POST
+    url: https://openedx.example.com/api/cli-ext/course/create
+
+  course.import:
+    method: POST
+    url: https://openedx.example.com/api/cli-ext/course/import
+
+  course.export:
+    method: POST
+    url: https://openedx.example.com/api/cli-ext/course/export
