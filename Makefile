@@ -1,3 +1,5 @@
+.PHONY: test build clean
+
 test:
 	go test ./...
 
