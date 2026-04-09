@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/openedx/cli/internal/cli/cmd"
+	"github.com/openedx/cli/internal/diagnostics"
 )
 
 // NewRootCmd creates and returns the root command for the openedx CLI.
@@ -29,6 +30,7 @@ func NewRootCmd() *cobra.Command {
 		cmd.NewEnrollmentCmd(DefaultExecuteFunc),
 		cmd.NewRoleCmd(DefaultExecuteFunc),
 		cmd.NewSchemaCmd(nil),
+		cmd.NewDoctorCmd(DefaultDoctorCheckFunc),
 	)
 
 	return rootCmd
@@ -40,4 +42,12 @@ func NewRootCmd() *cobra.Command {
 // TODO: Wire this to the full config/auth/provider stack in a future task.
 var DefaultExecuteFunc cmd.ExecuteFunc = func(_ context.Context, cmdKey string, args map[string]string) ([]byte, error) {
 	return nil, fmt.Errorf("command execution not yet configured: %s", cmdKey)
+}
+
+// DefaultDoctorCheckFunc is the production implementation of DoctorCheckFunc.
+// It runs the full diagnostic suite. When args contains "verify <command>", it
+// checks a specific command mapping instead.
+// TODO: Wire this to the full config/auth/provider stack in a future task.
+var DefaultDoctorCheckFunc cmd.DoctorCheckFunc = func(_ context.Context, _ []string) (*diagnostics.DoctorResult, error) {
+	return nil, fmt.Errorf("doctor checks not yet configured: load config first")
 }
