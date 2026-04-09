@@ -1,0 +1,29 @@
+{
+  "course_id": "course-v1:demo+cs101+2026",
+  "chapters": [
+    {
+      "id": "block-v1:demo+cs101+2026+type@chapter+block@ch1",
+      "title": "Chapter 1: Introduction",
+      "type": "chapter",
+      "children": [
+        {
+          "id": "block-v1:demo+cs101+2026+type@sequential+block@seq1",
+          "title": "Lesson 1: Welcome",
+          "type": "sequential",
+          "children": [
+            {
+              "id": "block-v1:demo+cs101+2026+type@vertical+block@vert1",
+              "title": "Welcome Video",
+              "type": "vertical"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block-v1:demo+cs101+2026+type@chapter+block@ch2",
+      "title": "Chapter 2: Basics",
+      "type": "chapter"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "course_id": "course-v1:demo+cs101+2026",
+    "org": "demo",
+    "number": "cs101",
+    "run": "2026",
+    "title": "Intro to AI",
+    "status": "active"
+  }
+]

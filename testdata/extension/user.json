@@ -1,0 +1,7 @@
+{
+  "username": "alice",
+  "email": "alice@example.com",
+  "full_name": "Alice Smith",
+  "active": true,
+  "created_at": "2026-01-15T10:30:00Z"
+}

@@ -1,0 +1,10 @@
+{
+  "id": "course-v1:demo+cs101+2026",
+  "org": "demo",
+  "number": "cs101",
+  "run": "2026",
+  "display_name": "Intro to AI",
+  "pacing": "instructor",
+  "start": "2026-01-01T00:00:00Z",
+  "end": "2026-06-30T23:59:59Z"
+}
