@@ -60,6 +60,21 @@ The CLI has six internal layers with clear boundaries:
 
 YAML config with profiles and extension mappings. Profiles contain base URL, token URL, and env var names for credentials. Extension mappings define custom API endpoints per command key. Example at `testdata/config/example.yaml`.
 
+For adding new commands or configuring extension APIs, see [docs/extending-the-cli.md](docs/extending-the-cli.md).
+
+## Command Domains
+
+Current built-in commands cover these domains:
+
+- `course` — list, get, create, import, export, outline get
+- `user` — create, list, get
+- `enrollment` — add, list, remove
+- `role` — assign
+- `grade` — list, gradebook
+- `certificate` — list
+- `schema` — inspect command-to-endpoint mappings
+- `doctor` — health checks
+
 ## Entrypoint
 
 `cmd/openedx/main.go` — wires root command and calls `cli.NewRootCmd().Execute()`.
