@@ -20,6 +20,13 @@ func TestRegistryContainsV1Commands(t *testing.T) {
 		"user.create",
 		"enrollment.add",
 		"role.assign",
+		"enrollment.list",
+		"enrollment.remove",
+		"user.list",
+		"user.get",
+		"grade.list",
+		"gradebook.get",
+		"certificate.list",
 	}
 
 	require.Len(t, reg, len(expectedKeys),
