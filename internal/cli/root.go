@@ -111,6 +111,8 @@ func NewRootCmd() *cobra.Command {
 		cmd.NewUserCmd(execFn),
 		cmd.NewEnrollmentCmd(execFn),
 		cmd.NewRoleCmd(execFn),
+		cmd.NewGradeCmd(execFn),
+		cmd.NewCertificateCmd(execFn),
 		cmd.NewSchemaCmd(extProvider),
 		cmd.NewDoctorCmd(doctorFn),
 	)
