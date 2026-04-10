@@ -1,0 +1,9 @@
+[
+  {
+    "username": "alice",
+    "course_id": "course-v1:demo+cs101+2026",
+    "percent": 0.85,
+    "letter_grade": "B+",
+    "passed": true
+  }
+]

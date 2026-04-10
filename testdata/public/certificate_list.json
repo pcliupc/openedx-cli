@@ -1,0 +1,12 @@
+{
+  "results": [
+    {
+      "username": "alice",
+      "course_id": "course-v1:demo+cs101+2026",
+      "certificate_type": "verified",
+      "status": "downloadable",
+      "download_url": "https://openedx.example.com/certificates/abc123",
+      "grade": "85%"
+    }
+  ]
+}

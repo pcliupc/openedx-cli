@@ -1,0 +1,18 @@
+{
+  "results": [
+    {
+      "username": "alice",
+      "email": "alice@example.com",
+      "name": "Alice Smith",
+      "is_active": true,
+      "date_joined": "2026-01-15T10:30:00Z"
+    },
+    {
+      "username": "bob",
+      "email": "bob@example.com",
+      "name": "Bob Jones",
+      "is_active": true,
+      "date_joined": "2026-02-01T08:00:00Z"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "results": [
+    {
+      "username": "alice",
+      "course_id": "course-v1:demo+cs101+2026",
+      "mode": "audit",
+      "is_active": true
+    },
+    {
+      "username": "bob",
+      "course_id": "course-v1:demo+cs101+2026",
+      "mode": "verified",
+      "is_active": true
+    }
+  ]
+}

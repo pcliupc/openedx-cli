@@ -1,0 +1,21 @@
+{
+  "course_id": "course-v1:demo+cs101+2026",
+  "grades": [
+    {
+      "username": "alice",
+      "course_id": "course-v1:demo+cs101+2026",
+      "percent": 0.85,
+      "letter_grade": "B+",
+      "passed": true,
+      "section": "Week 1"
+    },
+    {
+      "username": "bob",
+      "course_id": "course-v1:demo+cs101+2026",
+      "percent": 0.92,
+      "letter_grade": "A-",
+      "passed": true,
+      "section": "Week 1"
+    }
+  ]
+}
