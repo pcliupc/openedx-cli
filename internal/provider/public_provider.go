@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"strings"
 
 	"github.com/openedx/cli/internal/registry"
@@ -32,8 +33,8 @@ func NewPublicProvider(client *http.Client, cmd registry.CommandMeta) *PublicPro
 // metadata, attaches the Bearer token, and for POST requests sends args
 // as a JSON body.
 func (p *PublicProvider) Execute(ctx context.Context, baseURL string, token string, args map[string]string) (*ProviderResult, error) {
-	path := resolvePath(p.Cmd.Path, args)
-	url := strings.TrimRight(baseURL, "/") + path
+	path, _ := resolvePath(p.Cmd.Path, args)
+	reqURL := strings.TrimRight(baseURL, "/") + path
 
 	var bodyReader io.Reader
 	if p.Cmd.Method == "POST" || p.Cmd.Method == "post" {
@@ -42,9 +43,19 @@ func (p *PublicProvider) Execute(ctx context.Context, baseURL string, token stri
 			return nil, fmt.Errorf("failed to marshal request body: %w", err)
 		}
 		bodyReader = bytes.NewReader(jsonBody)
+	} else {
+		// For non-POST requests, append remaining args as query parameters.
+		queryParams := buildQueryParams(p.Cmd.Path, args)
+		if len(queryParams) > 0 {
+			if strings.Contains(reqURL, "?") {
+				reqURL += "&" + queryParams
+			} else {
+				reqURL += "?" + queryParams
+			}
+		}
 	}
 
-	req, err := http.NewRequestWithContext(ctx, p.Cmd.Method, url, bodyReader)
+	req, err := http.NewRequestWithContext(ctx, p.Cmd.Method, reqURL, bodyReader)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -81,11 +92,33 @@ func (p *PublicProvider) Execute(ctx context.Context, baseURL string, token stri
 }
 
 // resolvePath replaces {param} placeholders in the path template with values
-// from the args map.
-func resolvePath(pathTmpl string, args map[string]string) string {
+// from the args map and returns the set of keys that were consumed as path
+// parameters.
+func resolvePath(pathTmpl string, args map[string]string) (string, map[string]bool) {
 	result := pathTmpl
+	used := map[string]bool{}
 	for key, val := range args {
-		result = strings.ReplaceAll(result, "{"+key+"}", val)
+		placeholder := "{" + key + "}"
+		if strings.Contains(result, placeholder) {
+			result = strings.ReplaceAll(result, placeholder, val)
+			used[key] = true
+		}
 	}
-	return result
+	return result, used
+}
+
+// buildQueryParams returns a URL-encoded query string from args that were not
+// consumed as path placeholders.
+func buildQueryParams(pathTmpl string, args map[string]string) string {
+	_, used := resolvePath(pathTmpl, args)
+	params := url.Values{}
+	for key, val := range args {
+		if !used[key] {
+			params.Set(key, val)
+		}
+	}
+	if len(params) == 0 {
+		return ""
+	}
+	return params.Encode()
 }

@@ -56,7 +56,7 @@ func testPostCommand() registry.CommandMeta {
 }
 
 func TestPublicProviderResolvesPath(t *testing.T) {
-	result := resolvePath("/api/courses/v1/courses/{course_id}", map[string]string{
+	result, _ := resolvePath("/api/courses/v1/courses/{course_id}", map[string]string{
 		"course_id": "course-v1:Org+Num+Run",
 	})
 	assert.Equal(t, "/api/courses/v1/courses/course-v1:Org+Num+Run", result)

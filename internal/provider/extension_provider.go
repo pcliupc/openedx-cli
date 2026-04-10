@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
+	"strings"
 
 	"github.com/openedx/cli/internal/config"
 )
@@ -31,6 +33,7 @@ func NewExtensionProvider(client *http.Client) *ExtensionProvider {
 // It uses ext.Method and ext.URL directly, sends args as JSON for POST
 // requests, and attaches the Bearer token.
 func (p *ExtensionProvider) Execute(ctx context.Context, token string, ext config.ExtensionMapping, args map[string]string) (*ProviderResult, error) {
+	reqURL := ext.URL
 	var bodyReader io.Reader
 	if ext.Method == "POST" || ext.Method == "post" {
 		jsonBody, err := json.Marshal(args)
@@ -38,9 +41,19 @@ func (p *ExtensionProvider) Execute(ctx context.Context, token string, ext confi
 			return nil, fmt.Errorf("failed to marshal request body: %w", err)
 		}
 		bodyReader = bytes.NewReader(jsonBody)
+	} else if len(args) > 0 {
+		params := url.Values{}
+		for key, val := range args {
+			params.Set(key, val)
+		}
+		if strings.Contains(reqURL, "?") {
+			reqURL += "&" + params.Encode()
+		} else {
+			reqURL += "?" + params.Encode()
+		}
 	}
 
-	req, err := http.NewRequestWithContext(ctx, ext.Method, ext.URL, bodyReader)
+	req, err := http.NewRequestWithContext(ctx, ext.Method, reqURL, bodyReader)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
