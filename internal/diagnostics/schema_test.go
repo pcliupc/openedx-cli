@@ -46,8 +46,8 @@ func TestSchemaAllListsV1Commands(t *testing.T) {
 	schemas, err := GetAllCommandSchemas(nil)
 	require.NoError(t, err)
 
-	// The registry contains 9 commands.
-	assert.Len(t, schemas, 9)
+	// The registry contains 16 commands.
+	assert.Len(t, schemas, 16)
 
 	// Verify output is sorted by command key.
 	for i := 1; i < len(schemas); i++ {

@@ -105,6 +105,80 @@ func TestUserCreateWithoutOptionalName(t *testing.T) {
 	assert.False(t, hasName, "name should not be set when --name flag is omitted")
 }
 
+func TestUserListCallsWithCorrectArgs(t *testing.T) {
+	fixture := loadFixture(t, "user_list.json")
+	var capturedKey string
+	execFn := func(ctx context.Context, cmdKey string, args map[string]string) ([]byte, error) {
+		capturedKey = cmdKey
+		return fixture, nil
+	}
+
+	cmd := NewUserCmd(execFn)
+	var buf bytes.Buffer
+	cmd.SetOut(&buf)
+	cmd.SetArgs([]string{"list"})
+
+	err := cmd.Execute()
+	require.NoError(t, err)
+	assert.Equal(t, "user.list", capturedKey)
+
+	output := buf.String()
+	assert.Contains(t, output, `"username": "alice"`)
+	assert.Contains(t, output, `"username": "bob"`)
+}
+
+func TestUserListPageFlags(t *testing.T) {
+	fixture := loadFixture(t, "user_list.json")
+	var capturedArgs map[string]string
+	execFn := func(ctx context.Context, cmdKey string, args map[string]string) ([]byte, error) {
+		capturedArgs = args
+		return fixture, nil
+	}
+
+	cmd := NewUserCmd(execFn)
+	cmd.SetArgs([]string{"list", "--page", "2", "--page-size", "5"})
+
+	err := cmd.Execute()
+	require.NoError(t, err)
+	assert.Equal(t, "2", capturedArgs["page"])
+	assert.Equal(t, "5", capturedArgs["page_size"])
+}
+
+func TestUserGetRequiresUsername(t *testing.T) {
+	cmd := NewUserCmd(func(ctx context.Context, cmdKey string, args map[string]string) ([]byte, error) {
+		return nil, nil
+	})
+	cmd.SetArgs([]string{"get"})
+
+	err := cmd.Execute()
+	assert.Error(t, err)
+}
+
+func TestUserGetCallsWithCorrectArgs(t *testing.T) {
+	fixture := loadFixture(t, "user_get.json")
+	var capturedKey string
+	var capturedArgs map[string]string
+	execFn := func(ctx context.Context, cmdKey string, args map[string]string) ([]byte, error) {
+		capturedKey = cmdKey
+		capturedArgs = args
+		return fixture, nil
+	}
+
+	cmd := NewUserCmd(execFn)
+	var buf bytes.Buffer
+	cmd.SetOut(&buf)
+	cmd.SetArgs([]string{"get", "--username", "alice"})
+
+	err := cmd.Execute()
+	require.NoError(t, err)
+	assert.Equal(t, "user.get", capturedKey)
+	assert.Equal(t, "alice", capturedArgs["username"])
+
+	output := buf.String()
+	assert.Contains(t, output, `"username": "alice"`)
+	assert.Contains(t, output, `"email": "alice@example.com"`)
+}
+
 func TestUserCommandStructure(t *testing.T) {
 	cmd := NewUserCmd(func(ctx context.Context, cmdKey string, args map[string]string) ([]byte, error) {
 		return nil, nil
@@ -117,4 +191,6 @@ func TestUserCommandStructure(t *testing.T) {
 		subNames[i] = sub.Use
 	}
 	assert.Contains(t, subNames, "create")
+	assert.Contains(t, subNames, "list")
+	assert.Contains(t, subNames, "get")
 }
