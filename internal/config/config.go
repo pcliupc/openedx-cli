@@ -24,21 +24,16 @@ func Load(configPath string) (*Config, error) {
 	if configPath != "" {
 		v.SetConfigFile(configPath)
 	} else {
-		// Default search path: local directory
-		v.SetConfigName("openedx")
-		v.AddConfigPath(".")
-
-		// Default search path: user home directory
-		home, err := os.UserHomeDir()
-		if err == nil {
-			v.AddConfigPath(filepath.Join(home, ".openedx"))
+		// Resolve to an explicit file path to avoid Viper matching non-YAML
+		// files (e.g. a binary named "openedx" in the project root).
+		resolved, err := findDefaultConfig()
+		if err != nil {
+			return nil, err
 		}
+		v.SetConfigFile(resolved)
 	}
 
 	if err := v.ReadInConfig(); err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			return nil, fmt.Errorf("config file not found: searched ./openedx.yaml and ~/.openedx/config.yaml")
-		}
 		return nil, fmt.Errorf("failed to read config: %w", err)
 	}
 
@@ -56,6 +51,31 @@ func Load(configPath string) (*Config, error) {
 
 // validate checks that every profile has the required base_url and token_url
 // fields.
+
+// findDefaultConfig searches for config files in default locations and returns
+// the first path that exists on disk. This avoids Viper's filename-glob search
+// which can accidentally match non-YAML files (e.g. a binary named "openedx").
+func findDefaultConfig() (string, error) {
+	candidates := []string{
+		"./openedx.yaml",
+		"./openedx.yml",
+	}
+
+	if home, err := os.UserHomeDir(); err == nil {
+		candidates = append(candidates,
+			filepath.Join(home, ".openedx", "config.yaml"),
+			filepath.Join(home, ".openedx", "openedx.yaml"),
+		)
+	}
+
+	for _, path := range candidates {
+		if _, err := os.Stat(path); err == nil {
+			return path, nil
+		}
+	}
+
+	return "", fmt.Errorf("config file not found: searched ./openedx.yaml and ~/.openedx/config.yaml")
+}
 func validate(cfg *Config) error {
 	for name, profile := range cfg.Profiles {
 		if strings.TrimSpace(profile.BaseURL) == "" {

@@ -9,9 +9,14 @@ import (
 	"github.com/openedx/cli/internal/diagnostics"
 )
 
+// ExtensionsProvider is a function that returns the current extension mappings.
+// This allows schema to resolve extensions at runtime after config is loaded,
+// rather than requiring extensions at command creation time.
+type ExtensionsProvider func() map[string]config.ExtensionMapping
+
 // NewSchemaCmd creates the "schema" command for inspecting how CLI commands
 // map to backend API endpoints and extension overrides.
-func NewSchemaCmd(extensions map[string]config.ExtensionMapping) *cobra.Command {
+func NewSchemaCmd(extProvider ExtensionsProvider) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "schema [command|all]",
 		Short: "Show command schema and visibility",
@@ -21,6 +26,11 @@ Pass a command key (e.g. "course.create") to see a single command's schema,
 or "all" to list schemas for every registered command.`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			var extensions map[string]config.ExtensionMapping
+			if extProvider != nil {
+				extensions = extProvider()
+			}
+
 			arg := args[0]
 
 			if arg == "all" {
