@@ -267,18 +267,27 @@ func newCourseOutlineCmd(execFn ExecuteFunc) *cobra.Command {
 
 func newCourseOutlineGetCmd(execFn ExecuteFunc) *cobra.Command {
 	var courseID string
+	var depth int
+	var blockTypes string
 
 	cmd := &cobra.Command{
 		Use:   "get",
 		Short: "Get course outline",
-		Long:  "Retrieve the outline structure for a specific course.",
+		Long:  "Retrieve the outline structure for a specific course using the Blocks API.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if courseID == "" {
 				return fmt.Errorf("required flag(s) \"course-id\" not set")
 			}
 
 			cmdArgs := map[string]string{
-				"course_id": courseID,
+				"course_id":         courseID,
+				"requested_fields":  "children,display_name,type",
+			}
+			if depth > 0 {
+				cmdArgs["depth"] = fmt.Sprintf("%d", depth)
+			}
+			if blockTypes != "" {
+				cmdArgs["block_types_filter"] = blockTypes
 			}
 
 			data, err := execFn(cmd.Context(), "course.outline.get", cmdArgs)
@@ -296,6 +305,8 @@ func newCourseOutlineGetCmd(execFn ExecuteFunc) *cobra.Command {
 	}
 
 	cmd.Flags().StringVar(&courseID, "course-id", "", "course identifier (required)")
+	cmd.Flags().IntVar(&depth, "depth", 0, "depth of block tree to return (0 = all)")
+	cmd.Flags().StringVar(&blockTypes, "block-types", "", "comma-separated block types to include (e.g. chapter,sequential,vertical)")
 	_ = cmd.MarkFlagRequired("course-id")
 
 	return cmd

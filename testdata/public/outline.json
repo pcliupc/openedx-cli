@@ -1,30 +1,41 @@
 {
-  "course_id": "course-v1:demo+cs101+2026",
-  "blocks": [
-    {
-      "block_id": "block-v1:demo+cs101+2026+type@chapter+block@ch1",
-      "display_name": "Chapter 1: Introduction",
-      "type": "chapter",
+  "root": "block-v1:demo+cs101+2026+type@course+block@course",
+  "blocks": {
+    "block-v1:demo+cs101+2026+type@course+block@course": {
+      "id": "block-v1:demo+cs101+2026+type@course+block@course",
+      "type": "course",
+      "display_name": "CS101",
       "children": [
-        {
-          "block_id": "block-v1:demo+cs101+2026+type@sequential+block@seq1",
-          "display_name": "Lesson 1: Welcome",
-          "type": "sequential",
-          "children": [
-            {
-              "block_id": "block-v1:demo+cs101+2026+type@vertical+block@vert1",
-              "display_name": "Welcome Video",
-              "type": "vertical"
-            }
-          ]
-        }
+        "block-v1:demo+cs101+2026+type@chapter+block@ch1",
+        "block-v1:demo+cs101+2026+type@chapter+block@ch2"
       ]
     },
-    {
-      "block_id": "block-v1:demo+cs101+2026+type@chapter+block@ch2",
-      "display_name": "Chapter 2: Basics",
+    "block-v1:demo+cs101+2026+type@chapter+block@ch1": {
+      "id": "block-v1:demo+cs101+2026+type@chapter+block@ch1",
       "type": "chapter",
+      "display_name": "Chapter 1: Introduction",
+      "children": [
+        "block-v1:demo+cs101+2026+type@sequential+block@seq1"
+      ]
+    },
+    "block-v1:demo+cs101+2026+type@chapter+block@ch2": {
+      "id": "block-v1:demo+cs101+2026+type@chapter+block@ch2",
+      "type": "chapter",
+      "display_name": "Chapter 2: Basics",
       "children": []
+    },
+    "block-v1:demo+cs101+2026+type@sequential+block@seq1": {
+      "id": "block-v1:demo+cs101+2026+type@sequential+block@seq1",
+      "type": "sequential",
+      "display_name": "Lesson 1: Welcome",
+      "children": [
+        "block-v1:demo+cs101+2026+type@vertical+block@vert1"
+      ]
+    },
+    "block-v1:demo+cs101+2026+type@vertical+block@vert1": {
+      "id": "block-v1:demo+cs101+2026+type@vertical+block@vert1",
+      "type": "vertical",
+      "display_name": "Welcome Video"
     }
-  ]
+  }
 }

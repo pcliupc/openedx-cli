@@ -44,7 +44,7 @@ func LatestRegistry() map[string]CommandMeta {
 		"course.outline.get": {
 			Key:          "course.outline.get",
 			Method:       "GET",
-			Path:         "/api/courses/v1/courses/{course_id}/outline",
+			Path:         "/api/courses/v2/blocks/",
 			RequiredArgs: []string{"course_id"},
 			OutputModel:  "CourseOutline",
 		},

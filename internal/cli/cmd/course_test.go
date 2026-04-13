@@ -143,7 +143,6 @@ func TestCourseOutlineGetFormatsStableJSON(t *testing.T) {
 	require.NoError(t, json.Unmarshal([]byte(output), &parsed))
 
 	// Verify normalized fields present.
-	assert.Contains(t, output, `"course_id": "course-v1:demo+cs101+2026"`)
 	assert.Contains(t, output, `"title": "Chapter 1: Introduction"`)
 	assert.Contains(t, output, `"title": "Welcome Video"`)
 }
