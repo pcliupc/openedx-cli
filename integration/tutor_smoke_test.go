@@ -1,6 +1,7 @@
 package integration
 
 import (
+	"context"
 	"encoding/json"
 	"os"
 	"testing"
@@ -45,7 +46,7 @@ func TestTutorSmokeAuth(t *testing.T) {
 	profile := getProfile(t, cfg, "admin")
 
 	client := auth.NewHTTPTokenClient(nil)
-	token, err := client.Token(t.Context(), profile)
+	token, err := client.Token(context.Background(), profile)
 	if err != nil {
 		t.Fatalf("token acquisition failed: %v", err)
 	}
@@ -65,7 +66,7 @@ func TestTutorSmokeCourseList(t *testing.T) {
 
 	// Get token
 	tokenClient := auth.NewHTTPTokenClient(nil)
-	token, err := tokenClient.Token(t.Context(), profile)
+	token, err := tokenClient.Token(context.Background(), profile)
 	if err != nil {
 		t.Fatalf("token acquisition failed: %v", err)
 	}
