@@ -1,6 +1,8 @@
 bin/
+dist/
 openedx
 *.exe
 *.test
 *.out
 vendor/
+node_modules/
