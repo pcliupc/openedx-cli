@@ -15,11 +15,23 @@ Interacting with Open edX from automation typically means writing ad-hoc `curl` 
 
 ## Install
 
-Build from source (requires Go 1.23+):
+### npm (recommended)
 
 ```bash
-git clone https://github.com/openedx/cli.git
-cd cli
+npm install -g @pcliupc/openedx-cli
+```
+
+The postinstall script automatically downloads the correct pre-built binary for your platform from [GitHub Releases](https://github.com/pcliupc/openedx-cli/releases).
+
+Requires Node.js 14+.
+
+### Build from source
+
+Requires Go 1.23+:
+
+```bash
+git clone https://github.com/pcliupc/openedx-cli.git
+cd openedx-cli
 make build
 ```
 
