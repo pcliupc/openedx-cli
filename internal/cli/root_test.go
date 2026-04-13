@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"strings"
 	"testing"
+
+	"github.com/openedx/cli/internal/model"
 )
 
 func TestRootCommandDefaultsToJSON(t *testing.T) {
@@ -75,14 +77,50 @@ func TestPrintJSON(t *testing.T) {
 	}
 }
 
-func TestPrintTable(t *testing.T) {
-	var buf bytes.Buffer
-	err := PrintTable(&buf, nil)
-	if err == nil {
-		t.Error("expected error for unsupported table format")
+func TestPrintTableWithSlice(t *testing.T) {
+	users := []model.User{
+		{Username: "alice", Email: "alice@example.com", Name: "Alice", IsActive: true},
+		{Username: "bob", Email: "bob@example.com", Name: "Bob", IsActive: false},
 	}
-	if err.Error() != "table format not yet supported" {
-		t.Errorf("unexpected error: %v", err)
+	var buf bytes.Buffer
+	err := PrintTable(&buf, users)
+	if err != nil {
+		t.Fatalf("PrintTable failed: %v", err)
+	}
+
+	output := buf.String()
+	if !strings.Contains(output, "USERNAME") {
+		t.Errorf("missing header: %s", output)
+	}
+	if !strings.Contains(output, "alice") {
+		t.Errorf("missing data: %s", output)
+	}
+	if !strings.Contains(output, "bob") {
+		t.Errorf("missing data: %s", output)
+	}
+}
+
+func TestPrintTableWithNonSliceFallsBackToJSON(t *testing.T) {
+	user := model.User{Username: "alice", Email: "alice@example.com"}
+	var buf bytes.Buffer
+	err := PrintTable(&buf, user)
+	if err != nil {
+		t.Fatalf("PrintTable failed: %v", err)
+	}
+	if !strings.Contains(buf.String(), `"username": "alice"`) {
+		t.Errorf("expected JSON fallback, got: %s", buf.String())
+	}
+}
+
+func TestPrintTableEmptySlice(t *testing.T) {
+	var courses []model.Course
+	var buf bytes.Buffer
+	err := PrintTable(&buf, courses)
+	if err != nil {
+		t.Fatalf("PrintTable failed: %v", err)
+	}
+	if !strings.Contains(buf.String(), "(no results)") {
+		t.Errorf("expected empty message, got: %s", buf.String())
 	}
 }
 

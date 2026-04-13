@@ -63,7 +63,7 @@ func buildTree(blockID string, blocks map[string]rawBlock) model.OutlineBlock {
 		return model.OutlineBlock{ID: blockID}
 	}
 
-	id := firstNonEmpty(block.BlockID, block.ID)
+	id := firstNonEmpty(block.ID, block.BlockID)
 	title := firstNonEmpty(block.DisplayName, block.Title)
 
 	var children []model.OutlineBlock

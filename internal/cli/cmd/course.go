@@ -267,6 +267,7 @@ func newCourseOutlineCmd(execFn ExecuteFunc) *cobra.Command {
 
 func newCourseOutlineGetCmd(execFn ExecuteFunc) *cobra.Command {
 	var courseID string
+	var username string
 	var depth int
 	var blockTypes string
 
@@ -280,8 +281,14 @@ func newCourseOutlineGetCmd(execFn ExecuteFunc) *cobra.Command {
 			}
 
 			cmdArgs := map[string]string{
-				"course_id":         courseID,
-				"requested_fields":  "children,display_name,type",
+				"course_id":        courseID,
+				"requested_fields": "children,display_name,type",
+				"depth":            "all",
+			}
+			if username != "" {
+				cmdArgs["username"] = username
+			} else {
+				cmdArgs["all_blocks"] = "true"
 			}
 			if depth > 0 {
 				cmdArgs["depth"] = fmt.Sprintf("%d", depth)
@@ -305,6 +312,7 @@ func newCourseOutlineGetCmd(execFn ExecuteFunc) *cobra.Command {
 	}
 
 	cmd.Flags().StringVar(&courseID, "course-id", "", "course identifier (required)")
+	cmd.Flags().StringVar(&username, "username", "", "filter blocks visible to a specific user (defaults to all blocks)")
 	cmd.Flags().IntVar(&depth, "depth", 0, "depth of block tree to return (0 = all)")
 	cmd.Flags().StringVar(&blockTypes, "block-types", "", "comma-separated block types to include (e.g. chapter,sequential,vertical)")
 	_ = cmd.MarkFlagRequired("course-id")
@@ -323,15 +331,20 @@ func normalizeJob(data []byte) (*model.Job, error) {
 	return &job, nil
 }
 
-// printOutput dispatches to JSON output using the format flag from the command.
+// printOutput dispatches to the appropriate output format handler using the
+// --format flag from the root command.
 func printOutput(cmd *cobra.Command, v interface{}) error {
 	format, _ := cmd.Root().PersistentFlags().GetString("format")
-	return printJSON(cmd.OutOrStdout(), format, v)
+	switch format {
+	case "table":
+		return printTable(cmd.OutOrStdout(), v)
+	default:
+		return printJSON(cmd.OutOrStdout(), v)
+	}
 }
 
-// printJSON writes the value as formatted JSON to the writer. It accepts a
-// format parameter for forward compatibility but currently always outputs JSON.
-func printJSON(w io.Writer, format string, v interface{}) error {
+// printJSON writes the value as formatted JSON to the writer.
+func printJSON(w io.Writer, v interface{}) error {
 	data, err := json.MarshalIndent(v, "", "  ")
 	if err != nil {
 		return err
