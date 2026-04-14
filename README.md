@@ -365,6 +365,28 @@ go test ./internal/cli/cmd -run TestCourseList -v
 go test ./internal/provider -run TestFallback -v
 ```
 
+### Adding a New Command
+
+Adding a command touches five files, always in this order:
+
+1. **Registry** (`internal/registry/public_registry.go`) — add the API endpoint metadata (key, method, path, required args, output model)
+2. **Model** (`internal/model/`) — define the output struct (flat fields, stable JSON contract)
+3. **Normalizer** (`internal/normalize/`) — convert raw API response into the model struct, with test fixtures under `testdata/`
+4. **Command** (`internal/cli/cmd/`) — build the Cobra command with flags, call `execFn`, normalize, print output
+5. **Root** (`internal/cli/root.go`) — register the new command group in `rootCmd.AddCommand(...)`
+
+Example — adding `grade list`:
+
+```
+Registry:  "grade.list" → GET /api/grades/v1/courses/{course_id}/
+Model:     model.Grade{Username, CourseID, Percent, Letter, Passed}
+Normalize: GradesFromJSON(raw) → []model.Grade
+Command:   NewGradeCmd(execFn) → newGradeListCmd → --course-id flag
+Root:      rootCmd.AddCommand(cmd.NewGradeCmd(execFn))
+```
+
+For the full step-by-step guide with code examples, see [docs/extending-the-cli.md](docs/extending-the-cli.md).
+
 ### Architecture
 
 ```
