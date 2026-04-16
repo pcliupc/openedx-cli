@@ -343,6 +343,29 @@ Tips for CI:
 - Store credentials in CI secret variables, then export them as env vars before running commands
 - Pipe JSON output through `jq` for specific field extraction: `openedx course list | jq '.[0].course_id'`
 
+## Skills for AI Agents
+
+The CLI ships with a set of **skills** — structured Markdown documents that teach AI Agents (Claude, Copilot, etc.) how to use `openedx` commands autonomously. Skills are installed into the agent's working context so it knows which commands to run, what flags to pass, and how to handle errors.
+
+### Install Skills
+
+```bash
+npx skills add pcliupc/openedx-cli -y -g
+```
+
+### Available Skills
+
+| Skill | Description |
+|-------|-------------|
+| `openedx-shared` | Configuration, authentication, security rules, diagnostics |
+| `openedx-course` | Course management (create, import, export), enrollment, role assignment |
+| `openedx-user` | User management (create, list, get) |
+| `openedx-grade` | Grades, gradebook export, certificate queries |
+| `openedx-skill-maker` | Guide for creating custom skills |
+| `openedx-openapi-explorer` | Guide for exploring raw Open edX APIs beyond CLI coverage |
+
+Skills live in the `skills/` directory of this repository. Each skill has a `SKILL.md` (concepts, commands, workflows) and optional `references/` (per-command detail docs).
+
 ## Development
 
 ### Prerequisites
